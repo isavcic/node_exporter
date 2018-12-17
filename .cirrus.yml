@@ -4,5 +4,5 @@ freebsd_instance:
 build_task:
   env:
     CIRRUS_WORKING_DIR: /go/src/github.com/$CIRRUS_REPO_FULL_NAME
-  install_script: go get github.com/prometheus/node_exporter && cd ${GOPATH-$HOME/go}/src/github.com/prometheus/node_exporter && make
+  install_script: pkg install lang/go && go get github.com/prometheus/node_exporter && cd ${GOPATH-$HOME/go}/src/github.com/prometheus/node_exporter && make
 
