@@ -1,8 +1,8 @@
-container:
-  image: golang:latest
+freebsd_instance:
+  image: freebsd-12-0-release-amd64
 
-test_task:
+build_task:
   env:
     CIRRUS_WORKING_DIR: /go/src/github.com/$CIRRUS_REPO_FULL_NAME
-  get_script: go get -t -v ./...
-  test_script: go test -v ./...
+  install_script: go get github.com/prometheus/node_exporter && cd ${GOPATH-$HOME/go}/src/github.com/prometheus/node_exporter && make
+
