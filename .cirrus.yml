@@ -5,10 +5,10 @@ build_task:
   env:
     CIRRUS_WORKING_DIR: /root/go/src/github.com/prometheus/node_exporter
   install_script:
-    pkg install -y lang/go devel/git;
+    pkg install -y lang/go devel/git gmake;
     go env;
     go env | sh;
     go get github.com/prometheus/node_exporter;
     cd /root/go/src/github.com/prometheus/node_exporter;
-    make
+    gmake
 
