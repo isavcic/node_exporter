@@ -6,6 +6,7 @@ build_task:
     CIRRUS_WORKING_DIR: /root/go/src/github.com/prometheus/node_exporter
     CIRRUS_RELEASE: "0.0.1"
     GITHUB_TOKEN: ENCRYPTED[1d5156e686031b85fb915a3149e7464a8d51a9f85793fd179331b5c51a21b297c20fa53329e21216d797cbdedc4932bf]
+    CIRRUS_REPO_FULL_NAME: isavcic/node_exporter
   install_script: |
     pkg install -y lang/go devel/git gmake bash
     # go env
