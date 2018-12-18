@@ -4,11 +4,39 @@ freebsd_instance:
 build_task:
   env:
     CIRRUS_WORKING_DIR: /root/go/src/github.com/prometheus/node_exporter
-  install_script:
-    pkg install -y lang/go devel/git gmake bash;
-    go env;
-    go env | sh;
-    go get github.com/prometheus/node_exporter;
-    cd /root/go/src/github.com/prometheus/node_exporter;
+    CIRRUS_RELEASE: 0.0.1
+    GITHUB_TOKEN: ENCRYPTED[1d5156e686031b85fb915a3149e7464a8d51a9f85793fd179331b5c51a21b297c20fa53329e21216d797cbdedc4932bf]
+  install_script: >
+    pkg install -y lang/go devel/git gmake bash
+    # go env
+    # go env | sh
+    go get github.com/prometheus/node_exporter
+    cd /root/go/src/github.com/prometheus/node_exporter
     gmake
+    cd /root/go/bin
+    if [[ "$CIRRUS_RELEASE" == "" ]]; then
+      echo "Not a release. No need to deploy!"
+      exit 0
+    fi
 
+    if [[ "$GITHUB_TOKEN" == "" ]]; then
+      echo "Please provide GitHub access token via GITHUB_TOKEN environment variable!"
+      exit 1
+    fi
+
+    file_content_type="application/octet-stream"
+    files_to_upload=(
+      node_exporter
+    )
+
+    for fpath in $files_to_upload
+    do
+      echo "Uploading $fpath..."
+      name=$(basename "$fpath")
+      url_to_upload="https://uploads.github.com/repos/$CIRRUS_REPO_FULL_NAME/releases/$CIRRUS_RELEASE/assets?name=$name"
+      curl -X POST \
+        --data-binary @$fpath \
+        --header "Authorization: token $GITHUB_TOKEN" \
+        --header "Content-Type: $file_content_type" \
+        $url_to_upload
+    done
