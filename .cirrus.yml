@@ -14,6 +14,8 @@ build_task:
     cd /root/go/src/github.com/prometheus/node_exporter
     gmake
     cd /root/go/bin
+
+    cat << 'EOF' > /tmp/assets.sh
     if [[ "$CIRRUS_RELEASE" == "" ]]; then
       echo "Not a release. No need to deploy!"
       exit 0
@@ -40,3 +42,5 @@ build_task:
         --header "Content-Type: $file_content_type" \
         $url_to_upload
     done
+    EOF
+    bash /tmp/assets.sh
